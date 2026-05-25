@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"name": "esp_test",
+			"path": "../../../../Documents/PlatformIO/Projects/esp_test"
+		},
+		{
+			"name": "Smart Home",
+			"path": "../../../../Documents/PlatformIO/Projects/Smart Home"
+		}
+	],
+	"settings": {}
+}
