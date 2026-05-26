@@ -4,6 +4,7 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .models import BillingSession
 from decimal import Decimal
+from datetime import datetime
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -17,22 +18,20 @@ def start_session(request):
         is_active=True
     ).first()
     
-    print("USER:", request.user)
 
     if active:
         return Response({
             "message": "Session already active",
-            "session_id": active.id
+            "session_id": active.session_id
         })
 
     session = BillingSession.objects.create(
-        user=request.user,
-        is_active=True
+        user=request.user
     )
 
     return Response({
         "message": "Session started",
-        "session_id": session.id
+        "session_id": session.session.id
     })
     
 @api_view(['POST'])
@@ -46,7 +45,7 @@ def end_session(request):
 
     try:
         session = BillingSession.objects.get(
-            id=session_id,
+            session_id=session_id,
             user=request.user,
             is_active=True
         )
@@ -65,5 +64,6 @@ def end_session(request):
     session.save()
 
     return Response({
-        "message": "Session ended successfully"
+        "message": "Session ended successfully",
+        "session_id":session.session_id
     })
