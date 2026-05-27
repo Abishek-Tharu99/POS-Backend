@@ -5,13 +5,14 @@ from rest_framework.permissions import IsAuthenticated
 from .models import BillingSession
 from decimal import Decimal
 from datetime import datetime
+from django.utils import timezone
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def start_session(request):
     
-    if request.user.is_anonymous:
-        return Response({"error": "Unauthorized"}, status=401)
+    #if request.user.is_anonymous:
+     #   return Response({"error": "Unauthorized"}, status=401)
 
     active = BillingSession.objects.filter(
         user=request.user,
@@ -52,7 +53,7 @@ def end_session(request):
     except BillingSession.DoesNotExist:
         return Response({"error": "Session not found"}, status=404)
 
-    session.end_time = request.data.get("end_time")
+    session.end_time = timezone.now()
 
     session.total_sales =  Decimal(str(request.data.get("total_sales", 0)))
     session.credit_sales =  Decimal(str(request.data.get("credit", 0)))

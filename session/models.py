@@ -28,15 +28,22 @@ class BillingSession(models.Model):
         if not self.session_id:
 
             last_session = BillingSession.objects.order_by('-id').first()
+            new_number = 1
 
-            if last_session:
-                last_number = int(last_session.session_id.split('-')[-1])
-                new_number = last_number + 1
-            else:
-                new_number = 1
+            if last_session and last_session.session_id:
+                try:
+                    last_number= int(
+                       last_session.session_id.split('-')[1]
+                    )
+                    new_number = last_number + 1
+                   
+                except(ValueError,IndexError):
+                    new_number = 1
             
             year = datetime.now().year
-            self.session_id = f"{self.user.username}-{year}-{new_number:05d}"
+            self.session_id = (
+                f"{self.user.username}-{year}-{new_number:05d}"
+            )
 
         super().save(*args, **kwargs)
 
