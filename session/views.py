@@ -10,6 +10,7 @@ from django.utils import timezone
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def start_session(request):
+    print("START SESSION API HIT")
     
     #if request.user.is_anonymous:
      #   return Response({"error": "Unauthorized"}, status=401)
