@@ -68,12 +68,3 @@ def end_session(request):
         "message": "Session ended successfully",
         "session_id":session.session_id
     })
-
-@api_view(['GET'])
-def clear_sessions(request):
-
-    BillingSession.objects.all().delete()
-
-    return Response({
-        "message": "All sessions deleted"
-    })

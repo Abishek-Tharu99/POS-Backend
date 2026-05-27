@@ -1,7 +1,8 @@
 # models.py
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime
+from django.utils import timezone
+import uuid
 
 class BillingSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -26,26 +27,25 @@ class BillingSession(models.Model):
     def save(self, *args, **kwargs):
 
         if not self.session_id:
-
-            last_session = BillingSession.objects.order_by('-id').first()
-            new_number = 1
-
-            if last_session and last_session.session_id:
-                try:
-                    last_number= int(
-                       last_session.session_id.split('-')[1]
-                    )
-                    new_number = last_number + 1
-                   
-                except(ValueError,IndexError):
-                    new_number = 1
             
-            year = datetime.now().year
-            self.session_id = (
-                f"{self.user.username}-{year}-{new_number:05d}"
-            )
+            date_part = timezone.now().strftime("%Y%m%d")
+            uid = uuid.uuid4().hex[:6]
+
+            self.session_id = f"{self.user.username}-{date_part}-{uid}"
+
+        self.cash_sales = max(
+        self.total_sales - (
+        self.card_sales + self.fonepay_sales + self.credit_sales
+            ),0
+        )
 
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user.username} - {self.start_time}"
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=["user", "is_active"]),
+            models.Index(fields=["session_id"]),
+        ]   
