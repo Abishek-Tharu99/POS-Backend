@@ -33,19 +33,8 @@ class BillingSession(models.Model):
 
             self.session_id = f"{self.user.username}-{date_part}-{uid}"
 
-        self.cash_sales = max(
-        self.total_sales - (
-        self.card_sales + self.fonepay_sales + self.credit_sales
-            ),0
-        )
-
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user.username} - {self.start_time}"
     
-    class Meta:
-        indexes = [
-            models.Index(fields=["user", "is_active"]),
-            models.Index(fields=["session_id"]),
-        ]   
