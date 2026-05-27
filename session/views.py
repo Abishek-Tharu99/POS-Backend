@@ -31,7 +31,7 @@ def start_session(request):
 
     return Response({
         "message": "Session started",
-        "session_id": session.session.id
+        "session_id": session.session_id
     })
     
 @api_view(['POST'])
