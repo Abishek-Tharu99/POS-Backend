@@ -30,6 +30,8 @@ def start_session(request):
         user=request.user
     )
 
+    print("Session_Id : ", session.session_id)
+
     return Response({
         "message": "Session started",
         "session_id": session.session_id

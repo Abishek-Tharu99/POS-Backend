@@ -9,7 +9,7 @@ class BillingSession(models.Model):
 
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(null=True, blank=True)
-    session_id = models.CharField(max_length=200, blank=True,unique=True)
+    session_id = models.CharField(max_length=200,null=True, blank=True,unique=True)
     is_active = models.BooleanField(default=True)
 
     total_sales = models.DecimalField(max_digits=12, decimal_places=2, default=0)
