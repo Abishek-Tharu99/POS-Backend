@@ -11,6 +11,7 @@ from django.utils import timezone
 @permission_classes([IsAuthenticated])
 def start_session(request):
     print("START SESSION API HIT")
+    print(request.user)
     
     #if request.user.is_anonymous:
      #   return Response({"error": "Unauthorized"}, status=401)
@@ -20,6 +21,8 @@ def start_session(request):
         is_active=True
     ).first()
     
+    
+    print("Id : ", active)
 
     if active:
         return Response({
@@ -31,7 +34,6 @@ def start_session(request):
         user=request.user
     )
 
-    print("Id : ", active.id)
 
     return Response({
         "message": "Session started",
