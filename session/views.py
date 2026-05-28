@@ -25,8 +25,10 @@ def start_session(request):
         print("Session already active")
         return Response({
             "message": "Session already active",
-            "session_uid": active.user.id
+            "session_uid": active.id
         })
+    if not active:
+        print("active none")
 
     session = BillingSession.objects.create(
         user=request.user
