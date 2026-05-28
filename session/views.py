@@ -21,13 +21,11 @@ def start_session(request):
         is_active=True
     ).first()
     
-    
-    print("Id : ", active)
-
     if active:
+        print("Session already active")
         return Response({
             "message": "Session already active",
-            "session_uid": active.id
+            "session_uid": active.user.id
         })
 
     session = BillingSession.objects.create(
