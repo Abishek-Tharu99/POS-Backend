@@ -4,36 +4,54 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .models import BillingSession
 from decimal import Decimal
+from datetime import datetime
+from django.utils import timezone
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def start_session(request):
-    
-    if request.user.is_anonymous:
-        return Response({"error": "Unauthorized"}, status=401)
 
-    active = BillingSession.objects.filter(
-        user=request.user,
-        is_active=True
-    ).first()
-    
-    print("USER:", request.user)
+    try:
+        print("START SESSION API HIT")
+        print(request.user)
 
-    if active:
+        print("Before query")
+
+        active = BillingSession.objects.filter(
+            user=request.user,
+            is_active=True
+        ).first()
+
+        print("After query")
+        print("ACTIVE:", active)
+
+        if not active:
+            print("active none")
+
+        if active:
+            print("Session already active")
+
+            return Response({
+                "message": "Session already active",
+                "session_uid": active.session_id
+            })
+
+        print("Before create")
+
+        session = BillingSession.objects.create(
+            user=request.user
+        )
+
+        print("After create")
+
         return Response({
-            "message": "Session already active",
-            "session_id": active.id
+            "message": "Session started",
+            "session_id": session.session_id
         })
 
-    session = BillingSession.objects.create(
-        user=request.user,
-        is_active=True
-    )
-
-    return Response({
-        "message": "Session started",
-        "session_id": session.id
-    })
+    except Exception as e:
+        print("ERROR:", e)
+        return Response({"error": str(e)}, status=500)
     
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -46,14 +64,14 @@ def end_session(request):
 
     try:
         session = BillingSession.objects.get(
-            id=session_id,
+            session_id=session_id,
             user=request.user,
             is_active=True
         )
     except BillingSession.DoesNotExist:
         return Response({"error": "Session not found"}, status=404)
 
-    session.end_time = request.data.get("end_time")
+    session.end_time = timezone.now()
 
     session.total_sales =  Decimal(str(request.data.get("total_sales", 0)))
     session.credit_sales =  Decimal(str(request.data.get("credit", 0)))
@@ -65,5 +83,6 @@ def end_session(request):
     session.save()
 
     return Response({
-        "message": "Session ended successfully"
+        "message": "Session ended successfully",
+        "session_id":session.session_id
     })
