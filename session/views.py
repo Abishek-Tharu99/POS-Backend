@@ -85,8 +85,4 @@ def end_session(request):
     return Response({
         "message": "Session ended successfully",
         "session_id":session.session_id
-<<<<<<< HEAD
     })
-=======
-    })
->>>>>>> f42f5ef4876c80a05ddd4ff710e42adefb5b5890
