@@ -33,7 +33,7 @@ def start_session(request):
 
             return Response({
                 "message": "Session already active",
-                "session_uid": active.session_id
+                "session_id": active.session_id
             })
 
         print("Before create")
