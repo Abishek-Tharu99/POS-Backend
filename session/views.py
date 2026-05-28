@@ -10,36 +10,48 @@ from django.utils import timezone
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def start_session(request):
-    print("START SESSION API HIT")
-    print(request.user)
-    
-    #if request.user.is_anonymous:
-     #   return Response({"error": "Unauthorized"}, status=401)
 
-    active = BillingSession.objects.filter(
-        user=request.user,
-        is_active=True
-    ).first()
+    try:
+        print("START SESSION API HIT")
+        print(request.user)
 
-    if not active:
-        print("active none")
-    
-    if active:
-        print("Session already active")
+        print("Before query")
+
+        active = BillingSession.objects.filter(
+            user=request.user,
+            is_active=True
+        ).first()
+
+        print("After query")
+        print("ACTIVE:", active)
+
+        if not active:
+            print("active none")
+
+        if active:
+            print("Session already active")
+
+            return Response({
+                "message": "Session already active",
+                "session_uid": active.session_id
+            })
+
+        print("Before create")
+
+        session = BillingSession.objects.create(
+            user=request.user
+        )
+
+        print("After create")
+
         return Response({
-            "message": "Session already active",
-            "session_uid": active.session_id
+            "message": "Session started",
+            "session_id": session.session_id
         })
-    
 
-    session = BillingSession.objects.create(
-        user=request.user
-    )
-
-    return Response({
-        "message": "Session started",
-        "session_id": session.session_id
-    })
+    except Exception as e:
+        print("ERROR:", e)
+        return Response({"error": str(e)}, status=500)
     
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
