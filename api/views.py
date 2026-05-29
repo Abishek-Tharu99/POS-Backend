@@ -11,8 +11,10 @@ def save_bill(request):
     if serializer.is_valid():
         serializer.save()
         return Response({"message": "Saved"})
-    return Response(serializer.errors, status=400)
+    
     print(serializer.errors)
+    return Response(serializer.errors, status=400)
+    
     
     
     
