@@ -15,15 +15,13 @@ def start_session(request):
         print("START SESSION API HIT")
         print(request.user)
 
-        print("Before query")
-
         active = BillingSession.objects.filter(
             user=request.user,
             is_active=True
         ).first()
 
-        print("After query")
-        print("ACTIVE:", active)
+        # print("After query")
+        # print("ACTIVE:", active)
 
         if not active:
             print("active none")
@@ -37,13 +35,13 @@ def start_session(request):
                 "username": active.user.username
             })
 
-        print("Before create")
+        # print("Before create")
 
         session = BillingSession.objects.create(
             user=request.user
         )
 
-        print("After create")
+        # print("After create")
 
         return Response({
             "message": "Session started",
