@@ -1,7 +1,7 @@
 from django.db import models
 
 class Summary(models.Model):
-    session_id = models.CharField(max_length=100, unique=True)
+    session_id = models.CharField(max_length=100, unique=True,null=True,blank=True)
     opening_balance = models.FloatField()
     cash_sales = models.FloatField()
     pos = models.FloatField()
