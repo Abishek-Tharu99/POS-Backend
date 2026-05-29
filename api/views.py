@@ -20,9 +20,9 @@ def save_bill(request):
     
 # GET BY DATE
 @api_view(['GET'])
-def get_bill(request, date):
+def get_bill(request):
     try:
-        bill = Summary.objects.get(date=date)
+        bill = Summary.objects.get(session_id=request.session_id)
         serializer = BillSerializer(bill)
         return Response(serializer.data)
     except Summary.DoesNotExist:

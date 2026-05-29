@@ -1,7 +1,7 @@
 from django.db import models
 
 class Summary(models.Model):
-    date = models.DateField()
+    session_id = models.CharField(max_length=100, unique=True)
     opening_balance = models.FloatField()
     cash_sales = models.FloatField()
     pos = models.FloatField()
@@ -16,4 +16,4 @@ class Summary(models.Model):
 
 
     def __str__(self):
-        return str(self.date)
+        return str(self.session_id)
