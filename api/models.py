@@ -18,4 +18,4 @@ class Summary(models.Model):
 
 
     def __str__(self):
-        return str(self.session_id)
+        return str(self.session)

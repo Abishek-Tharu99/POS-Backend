@@ -6,17 +6,7 @@ from .models import Summary
 from .serializers import BillSerializer
 
 
-# # SAVE DATA
-# @api_view(['POST'])
-# def save_bill(request):
-#     serializer = BillSerializer(data=request.data)
-#     if serializer.is_valid():
-#         serializer.save()
-#         return Response({"message": "Saved"})
-    
-#     print(serializer.errors)
-#     return Response(serializer.errors, status=400)
-    
+
     
 @api_view(['POST'])
 def save_bill(request):
@@ -48,9 +38,7 @@ def save_bill(request):
 
 # GET BY DATE
 @api_view(['GET'])
-def get_bill(request):
-    session_id = request.query_params.get("session_id")
-
+def get_bill(request, session_id):   # 👈 take from URL, not query params
     try:
         session = BillingSession.objects.get(session_id=session_id)
         bill = Summary.objects.get(session=session)
@@ -58,5 +46,8 @@ def get_bill(request):
         serializer = BillSerializer(bill)
         return Response(serializer.data)
 
+    except BillingSession.DoesNotExist:
+        return Response({"error": "Session not found"}, status=404)
+
     except Summary.DoesNotExist:
-        return Response({"error": "Not found"}, status=404)
+        return Response({"error": "Bill not found"}, status=404)
