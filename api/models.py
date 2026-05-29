@@ -1,8 +1,8 @@
 from django.db import models
-from backend.session.models import BillingSession
+from session.models import BillingSession
 
 class Summary(models.Model):
-    session = models.OneToOneField(BillingSession, on_delete=models.CASCADE,unique=True)
+    session = models.OneToOneField(BillingSession, on_delete=models.CASCADE,unique=True,null=True,blank=True)
     
     opening_balance = models.FloatField()
     cash_sales = models.FloatField()
