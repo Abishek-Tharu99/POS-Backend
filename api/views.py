@@ -43,9 +43,12 @@ def get_bill(request, session_id):   # 👈 take from URL, not query params
         print(f"Fetching bill for session_id: {session_id}")  # Debug log
         
         session = BillingSession.objects.get(session_id=session_id)
+        print(session)  # Debug log to confirm session retrieval
         bill = Summary.objects.get(session=session)
+        print(bill)  # Debug log to confirm bill retrieval
 
         serializer = BillSerializer(bill)
+        print(serializer.data)  # Debug log to confirm serialization
         return Response(serializer.data)
 
     except BillingSession.DoesNotExist:
