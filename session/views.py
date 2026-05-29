@@ -33,7 +33,8 @@ def start_session(request):
 
             return Response({
                 "message": "Session already active",
-                "session_id": active.session_id
+                "session_id": active.session_id,
+                "username": active.user.username
             })
 
         print("Before create")
@@ -46,7 +47,8 @@ def start_session(request):
 
         return Response({
             "message": "Session started",
-            "session_id": session.session_id
+            "session_id": session.session_id,
+            "username": session.user.username
         })
 
     except Exception as e:
@@ -84,5 +86,6 @@ def end_session(request):
 
     return Response({
         "message": "Session ended successfully",
-        "session_id":session.session_id
+        "session_id":session.session_id,
+        "username": session.user.username,
     })
