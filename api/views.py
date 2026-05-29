@@ -40,6 +40,8 @@ def save_bill(request):
 @api_view(['GET'])
 def get_bill(request, session_id):   # 👈 take from URL, not query params
     try:
+        print(f"Fetching bill for session_id: {session_id}")  # Debug log
+        
         session = BillingSession.objects.get(session_id=session_id)
         bill = Summary.objects.get(session=session)
 
