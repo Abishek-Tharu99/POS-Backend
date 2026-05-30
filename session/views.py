@@ -28,6 +28,7 @@ def start_session(request):
 
         if active:
             print("Session already active")
+            print("DB session_id:", active.session_id)
 
             return Response({
                 "message": "Session already active",

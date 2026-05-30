@@ -38,6 +38,14 @@ def save_bill(request):
 # GET BY DATE
 @api_view(['GET'])
 def get_bill(request, session_id):   # 👈 take from URL, not query params
+
+    all_sessions = BillingSession.objects.values_list(
+        "session_id",
+        flat=True
+    )
+
+    print("All sessions:", list(all_sessions))
+    print(f"Requested session_id: {session_id}")
     try:
         print(f"Fetching bill for session_id: {session_id}")  # Debug log
         
