@@ -6,9 +6,12 @@ from datetime import datetime
 import nepali_datetime
 from django.db import transaction
 from customers.models import Customer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_bill_no(request):
     
     bill_type = request.GET.get("type", "SI")
@@ -30,6 +33,7 @@ def get_bill_no(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_items(request):
     query = request.GET.get('search', '')
 
@@ -44,6 +48,7 @@ def get_items(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def save_bill(request):
     data = request.data
     
@@ -152,6 +157,7 @@ def save_bill(request):
     
     
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_recent_bills(request):
     bills = Bill.objects.filter(
         user=request.user
@@ -171,6 +177,7 @@ def get_recent_bills(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_bill_details(request, bill_no):
     try:
         bill = Bill.objects.get(
