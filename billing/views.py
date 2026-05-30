@@ -105,31 +105,33 @@ def save_bill(request):
 
     date_np = nepali_datetime.date.from_datetime_date(date_en)
 
-
-
+    try:
     # ✅ Create Bill
-   
-    bill = Bill.objects.create(
-        user=request.user,
-        bill_no=bill_no,
+        bill = Bill.objects.create(
+            user=request.user,
+            bill_no=bill_no,
 
-        date_en=date_en,
-        date_np=str(date_np),
-        time=time,
-        customer_name=customer_name,
-        customer_no=customer_no,
-        customer_pan=customer_pan,
-        customer_addr=customer_addr,
+            date_en=date_en,
+            date_np=str(date_np),
+            time=time,
+            customer_name=customer_name,
+            customer_no=customer_no,
+            customer_pan=customer_pan,
+            customer_addr=customer_addr,
 
-        total_amount=total,   # ✅ map correctly
-        discount=discount,
-        vat=Vat,
-        net_amount=netAmount,       # ✅ map correctly
+            total_amount=total,   # ✅ map correctly
+            discount=discount,
+            vat=Vat,
+            net_amount=netAmount,       # ✅ map correctly
 
-        tender=tender,
-        change=change,
-    )
-    # ✅ Save Items
+            tender=tender,
+            change=change,
+        )
+    except Exception as e:
+        print("Error creating bill:", e)
+        return Response({"error": "Failed to create bill"}, status=500)
+    
+        # ✅ Save Items
     print("bill created, now saving items and payments")
     
     for item in data.get("items", []):
