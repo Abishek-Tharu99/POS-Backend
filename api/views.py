@@ -45,11 +45,9 @@ def get_bill(request, session_id):   # 👈 take from URL, not query params
     sessions = BillingSession.objects.all()
 
     print("Available sessions:")
-    for s in sessions:
-        print(
-            f"id={s.id}, session_id={s.session_id}"
     
-        )
+    for s in sessions:
+        print(f"id={s.id}, session_id={s.session_id}")
         
     try:
         print(f"Fetching bill for session_id: {session_id}")  # Debug log
