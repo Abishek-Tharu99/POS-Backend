@@ -58,6 +58,7 @@ def start_session(request):
 def end_session(request):
 
     session_id = request.data.get("session_id")
+    print(session_id)
     
     if not session_id:
         return Response({"error": "session_id required"}, status=400)
