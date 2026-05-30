@@ -1,7 +1,5 @@
-from flask import sessions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
 from session.models import BillingSession
 from .models import Summary
 from .serializers import BillSerializer
