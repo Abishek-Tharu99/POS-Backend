@@ -51,3 +51,11 @@ class Payment(models.Model):
 
     method = models.CharField(max_length=20)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    
+class BillSequence(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    bill_type = models.CharField(max_length=10)
+    last_no = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = ('user', 'bill_type')

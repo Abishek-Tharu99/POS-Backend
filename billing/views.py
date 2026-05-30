@@ -6,6 +6,7 @@ from datetime import datetime
 import nepali_datetime
 from django.db import transaction
 from customers.models import Customer
+from .models import BillSequence
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 
@@ -17,18 +18,27 @@ def get_bill_no(request):
     bill_type = request.GET.get("type", "SI")
     
     with transaction.atomic():
-        last_bill = (
-            Bill.objects.select_for_update().filter(
-                bill_no__startswith=bill_type,
-                user=request.user   # 🔥 ADD THIS
-        ).order_by('-id').first()
+        seq, created = BillSequence.objects.select_for_update().get_or_create(
+            user=request.user,
+            bill_type=bill_type,
+            defaults={"last_no": 0}
         )
+        
+        seq.last_no += 1
+        seq.save()
+        bill_no = f"{bill_type}-{seq.last_no:06d}"
+        # last_bill = (
+        #     Bill.objects.select_for_update().filter(
+        #         bill_no__startswith=bill_type,
+        #         user=request.user   # 🔥 ADD THIS
+        # ).order_by('-id').first()
+        # )
 
-        if last_bill:
-            last_no = int(last_bill.bill_no.split('-')[-1])
-            bill_no = f"{bill_type}-{last_no + 1:06d}"
-        else:
-            bill_no = f"{bill_type}-000001"
+        # if last_bill:
+        #     last_no = int(last_bill.bill_no.split('-')[-1])
+        #     bill_no = f"{bill_type}-{last_no + 1:06d}"
+        # else:
+        #     bill_no = f"{bill_type}-000001"
 
     return Response({"bill_no": bill_no})
 
@@ -60,21 +70,14 @@ def save_bill(request):
     
  
     with transaction.atomic():
-        last_bill = (
-            Bill.objects.select_for_update()
-            .filter(bill_no__startswith=bill_type)
-            .order_by('-id')
-            .first()
+        
+        seq = BillSequence.objects.select_for_update().get(
+            user=request.user,
+            bill_type=bill_type
         )
 
-        if last_bill:
-            last_no = int(last_bill.bill_no.split('-')[-1])
-            
-        else:
-            last_no = 0
+        bill_no = f"{bill_type}-{seq.last_no:06d}"
         
-        bill_no = f"{bill_type}-{last_no + 1:06d}"
-    
     
     print(data)
     
