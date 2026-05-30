@@ -16,24 +16,24 @@ def get_bill_no(request):
     
     bill_type = request.GET.get("type", "SI")
     
-    last_bill = (
-        Bill.objects.select_for_update().filter(
-            bill_no__startswith=bill_type,
-            user=request.user   # 🔥 ADD THIS
-    ).order_by('-id').first()
-    )
+    with transaction.atomic():
+        last_bill = (
+            Bill.objects.select_for_update().filter(
+                bill_no__startswith=bill_type,
+                user=request.user   # 🔥 ADD THIS
+        ).order_by('-id').first()
+        )
 
-    if last_bill:
-        last_no = int(last_bill.bill_no.split('-')[-1])
-        bill_no = f"{bill_type}-{last_no + 1:06d}"
-    else:
-        bill_no = f"{bill_type}-000001"
+        if last_bill:
+            last_no = int(last_bill.bill_no.split('-')[-1])
+            bill_no = f"{bill_type}-{last_no + 1:06d}"
+        else:
+            bill_no = f"{bill_type}-000001"
 
     return Response({"bill_no": bill_no})
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def get_items(request):
     query = request.GET.get('search', '')
 
