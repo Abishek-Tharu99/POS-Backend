@@ -96,6 +96,8 @@ def save_bill(request):
     discount = float(data.get("discount", 0))
     netAmount = (taxableAmount - discount) + Vat
     
+    print("calculation done")
+    
     # ✅ Dates
     now = datetime.now()
     date_en = now.date()
