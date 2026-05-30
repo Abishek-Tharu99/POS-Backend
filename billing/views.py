@@ -60,6 +60,7 @@ def get_items(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def save_bill(request):
+    
     data = request.data
     
     bill_type = data.get("billType", "SI")
@@ -67,7 +68,7 @@ def save_bill(request):
     customer_no = data.get("customer_no", "")
     customer_pan = data.get("customer_pan", "")
     customer_addr = data.get("customer_addr", "")
-    
+    print(data)
  
     with transaction.atomic():
         
@@ -79,7 +80,7 @@ def save_bill(request):
         bill_no = f"{bill_type}-{seq.last_no:06d}"
         
     
-    print(data)
+    print("all good till here")
     
     total = 0
 
