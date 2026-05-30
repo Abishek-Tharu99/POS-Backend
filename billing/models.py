@@ -1,6 +1,8 @@
 # billing/models.py
 
 from django.db import models
+from django.contrib.auth.models import User
+
 
 class Item(models.Model):
     name = models.CharField(max_length=200)
@@ -11,6 +13,7 @@ class Item(models.Model):
         return self.name
 
 class Bill(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)  # 🔥 ADD THIS
     bill_no = models.CharField(max_length=50, unique=True)
     date_en = models.DateField()
     date_np = models.CharField(max_length=20)

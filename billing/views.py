@@ -13,9 +13,12 @@ def get_bill_no(request):
     
     bill_type = request.GET.get("type", "SI")
     
-    last_bill = Bill.objects.filter(
-    bill_no__startswith=bill_type
+    last_bill = (
+        Bill.objects.select_for_update().filter(
+            bill_no__startswith=bill_type,
+            user=request.user   # 🔥 ADD THIS
     ).order_by('-id').first()
+    )
 
     if last_bill:
         last_no = int(last_bill.bill_no.split('-')[-1])
@@ -96,6 +99,7 @@ def save_bill(request):
     # ✅ Create Bill
    
     bill = Bill.objects.create(
+        user=request.user,
         bill_no=bill_no,
 
         date_en=date_en,
@@ -149,8 +153,10 @@ def save_bill(request):
     
 @api_view(['GET'])
 def get_recent_bills(request):
-    bills = Bill.objects.all().order_by('-date_en', '-time')
-
+    bills = Bill.objects.filter(
+        user=request.user
+    ).order_by('-date_en', '-time')
+    
     data = [
         {
             "bill_no": b.bill_no,
@@ -167,7 +173,10 @@ def get_recent_bills(request):
 @api_view(['GET'])
 def get_bill_details(request, bill_no):
     try:
-        bill = Bill.objects.get(bill_no=bill_no)
+        bill = Bill.objects.get(
+            bill_no=bill_no,
+            user=request.user   # 🔥 ADD THIS
+        )
 
         items = BillItem.objects.filter(bill=bill)
         payments = Payment.objects.filter(bill=bill)
