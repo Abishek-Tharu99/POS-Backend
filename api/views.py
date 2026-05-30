@@ -51,8 +51,13 @@ def get_bill(request, session_id):   # 👈 take from URL, not query params
         print(serializer.data)  # Debug log to confirm serialization
         return Response(serializer.data)
 
-    except BillingSession.DoesNotExist:
-        return Response({"error": "Session not found"}, status=404)
+    # except BillingSession.DoesNotExist:
+    #     print("Session not found")
+    #     return Response({"error": "Session not found"}, status=404)
 
-    except Summary.DoesNotExist:
-        return Response({"error": "Bill not found"}, status=404)
+    # except Summary.DoesNotExist:
+    #     print("Bill not found")
+    #     return Response({"error": "Bill not found"}, status=404)
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return Response({"error": "An unexpected error occurred"}, status=500)
