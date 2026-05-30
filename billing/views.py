@@ -130,7 +130,8 @@ def save_bill(request):
         change=change,
     )
     # ✅ Save Items
-      
+    print("bill created, now saving items and payments")
+    
     for item in data.get("items", []):
         code = item.get("code", "")
         name = item.get("name", "")
@@ -146,7 +147,8 @@ def save_bill(request):
             qty=qty,
             total=total
         )
-
+    print("items saved, now saving payments")
+    
     # ✅ Save Payments
     for p in data.get("payments", []):
         Payment.objects.create(
@@ -154,7 +156,7 @@ def save_bill(request):
             method=p.get("method"),
             amount=p.get("amount", 0),
         )
-    
+    print("payments saved")
 
     return Response({
         "status": "success",
